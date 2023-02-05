@@ -19,11 +19,28 @@
 + Cách kiểm tra lỗ hổng : sử dụng trình quét của burpsuit
 + Cách kiểm tra lỗ hổng thủ công: theo các bước sau
 > B1: Kiểm tra tất cả đầu vào: Xem có thể nhập dữ liệu tại những đâu
+
 > B2: Gửi giá trị ngẫu nhiên xem có reflected trong response hay không
+
 > B3: Xác định context mà xảy ra reflected: có thể là thẻ HTML, cũng có thể là đoạn javacscript
-> B4: Gửi payload thường: <script> alert()</script>
+
+> B4: Gửi payload thường: <script> alert()</script
+  
 > B5: Gửi các payload thay thế tương đương
+
 > B6: Nếu tìm thấy payload hoạt động, thử test trên browser
+
++ Sự khác nhau giữa Reflect XSS và Store XSS: Reflect XSS ứng dụng lấy input từ HTTP request và nhúng input đó vào response ngay lập tức theo 1 cách không an toàn(không mã hóa, làm sạch gì cả). Store XSS ứng dụng store input đó và nhúng vào response sau.
++ Self XSS: chỉ được kích hoạt khi nạn nhân dán XSS payload trên chính browser của họ. Về cơ bản nó giống như một cuộc tấn công kĩ nghệ xã hội.
+
++ XSS context: Bao gồm
+> Vị trí trong phản hồi xuất hiện dữ liệu có thể kiểm soát của kẻ tấn công
+
+> Mọi xác thực đầu vào hoặc quá trình xử lý khác đang được ứng dụng thực hiện trên dữ liệu đó.
+
+2.1.1 Bài tập
++ Một số bài như **Reflected XSS into HTML context with most tags and attributes blocked**, **Reflected XSS into HTML context with all tags blocked except custom ones** yêu cầu phải sử dụng Burp Intruder để tìm kiếm tag, attribute và event không bị chặn, dữ liệu tên các thẻ nằm ở **XSS Cheat Sheet** của Portswwiger
+  
 2.2. Stored XSS: 
 + Hacker chèn script nguy hiểm vào trang web lỗi, script sẽ được lưu lại trong ứng dụng web. Bất cứ khi nào user truy cập vào trang web có chứa đoạn script đó, script sẽ được thực thi. Chính vì attack xảy ra qua 2 bước như vậy nên loại này còn được gọi là second-order XSS.
 

@@ -1,8 +1,8 @@
-1. XSS là gì
+# 1. XSS là gì
 + XSS là kĩ thuật tấn công để chèn các script nguy hiểm vào source code ứng dụng web, mục đích thường là chiếm lấy phiên đăng nhập của người dùng.
-2. Các loại XSS
+# 2. Các loại XSS
 
-2.1. Reflected XSS: 
+## 2.1. Reflected XSS: 
 + Script nguy hiểm được chèn trực tiếp vào response của user, hacker cần phải gửi link độc hại này cho user và lừa user nhấp vào link. Payload được thực hiện trong cùng một request và response nên còn được gọi là first-order XSS.
 + Phát sinh khi ứng dụng nhận dữ liệu trong HTTP request và include dữ liệu đó trong response ngay lập tức theo cách không an toàn.
 
@@ -38,16 +38,29 @@
 
 > Mọi xác thực đầu vào hoặc quá trình xử lý khác đang được ứng dụng thực hiện trên dữ liệu đó.
 
-2.1.1 Bài tập
+### 2.1.1 Bài tập
 + Một số bài như **Reflected XSS into HTML context with most tags and attributes blocked**, **Reflected XSS into HTML context with all tags blocked except custom ones** yêu cầu phải sử dụng Burp Intruder để tìm kiếm tag, attribute và event không bị chặn, dữ liệu tên các thẻ nằm ở **XSS Cheat Sheet** của Portswwiger
-  
-2.2. Stored XSS: 
++ Đôi khi một số trang chỉ cho phép up ảnh .jpg hoặc .png vẫn có thể cho phép sử dụng ảnh svg
++ Nếu như XSS context nằm trong thuộc tính href của thẻ neo, sử dụng giao thức giả javascript
+![image](https://user-images.githubusercontent.com/97771705/216812102-15dcfd66-b802-46ec-80ff-61a4e0267e79.png)
++ 
+
+### 2.1.2 Một số thẻ, event đáng chú ý
++ Object Location : được sử dụng để lấy địa chỉ
+ trang hiện tại
++ Event onfocus: xảy ra khi một phần tử được lấy tiêu điểm, cần sự kích hoạt của người dùng như click chuột hoặc nhấn tab
+![image](https://user-images.githubusercontent.com/97771705/216810811-2c7ba076-66e1-49b7-a915-a799194649ce.png)
++ Event onblur: xảy ra khi 1 phần tử mất tiêu điểm
++ ![image](https://user-images.githubusercontent.com/97771705/216810884-04788f18-0e81-44ae-91be-3f261cfa48b1.png)
++ Attribute tabindex: chỉ định thứ tự tab của một phần tử ,cho phép developer làm cho các HTML elements có thể được đặt focus
++ Thẻ <svg: là thẻ sử dụng XML,miêu tả các hình ảnh đồ họa vector dạng 2 chiều, hoạt hình và tĩnh.
+## 2.2. Stored XSS: 
 + Hacker chèn script nguy hiểm vào trang web lỗi, script sẽ được lưu lại trong ứng dụng web. Bất cứ khi nào user truy cập vào trang web có chứa đoạn script đó, script sẽ được thực thi. Chính vì attack xảy ra qua 2 bước như vậy nên loại này còn được gọi là second-order XSS.
 
-2.3. DOM based XSS: 
+## 2.3. DOM based XSS: 
 + Khá giống với Reflected XSS, tuy nhiên script của hacker sẽ không được nhúng trực tiếp vào ứng dụng web mà thông qua DOM (Document Object Model) và không giống như 2 loại XSS trên, mã độc sẽ được thực thi ngay khi xử lý phía client mà không thông qua server.
 
-3. Một số cách bypass
+# 3. Một số cách bypass
 
 + Thay đổi chữ hoa thường. VD: <script -> <ScRipt , <SCRIPT hoặc nhiều mẫu khác
 + Thay đổi thẻ: có rất nhiều thẻ thực thi được javascript, tham khảo trên github https://github.com/swisskyrepo/PayloadsAllTheThings

@@ -73,10 +73,37 @@
 ### 2.3.2 Thuật ngữ 
 
 + Source là thuộc tính JavaScript chấp nhận dữ liệu có khả năng bị kẻ tấn công kiểm soát. VD URL, attribute location, database....
-+ Sink là một hàm JavaScript hoặc đối tượng DOM nguy hiểm tiềm ẩn có thể gây ra các tác động không mong muốn nếu dữ liệu do kẻ tấn công kiểm soát được chuyển đến nó. VD eval(), document.body.innerHTML, postMesage,...
++ Sink là một hàm JavaScript hoặc đối tượng DOM nguy hiểm tiềm ẩn có thể gây ra các tác động không mong muốn nếu dữ liệu do kẻ tấn công kiểm soát được chuyển đến nó. VD eval(), document.body.innerHTML, postMessage,document.write, document.domain...
 
 # 3. Một số cách bypass
 
 + Thay đổi chữ hoa thường. VD: <script -> <ScRipt , <SCRIPT hoặc nhiều mẫu khác
 + Thay đổi thẻ: có rất nhiều thẻ thực thi được javascript, tham khảo trên github https://github.com/swisskyrepo/PayloadsAllTheThings
 
+# 4. Exploit XSS
++ Steel cookie 
+  ![image](https://user-images.githubusercontent.com/97771705/216878473-dda56192-401b-433c-9ce2-caa91fd3f809.png)
++ Steel password
++ Khai thác XSS để thực hiện CSRF
+  ![image](https://user-images.githubusercontent.com/97771705/216879037-4b306939-961a-49ad-9ce7-a4bd3404a21f.png)
+# 5. More
+  https://portswigger.net/web-security/cross-site-scripting/dangling-markup
+  https://portswigger.net/web-security/cross-site-scripting/contexts/client-side-template-injection
++ Sandbox là một kỹ thuật giúp cô lập các ứng dụng, giúp bảo vệ và không cho các phần mềm độc hại xâm nhập vào máy tính, điện thoại để hạn chế hỏng hệ thống máy hoặc rò rỉ các thông tin cá nhân.Sandbox sẽ giới hạn chức năng của một đoạn mã nào đó và cấp quyền cho chúng chỉ được hiện một số chức năng nhất định, không cho nó thực hiện những chức năng khác gây nguy hại đến máy tính của bạn. 
++ Kỹ thuật khi XSS without HTML: Client-side template injection :Xảy ra khi app nhúng template framework của client vào web. Khi nhúng sẽ thực thi tất cả các template, kể cả template độc hại
+# 6. Cách ngăn chặn
++ Lọc dữ liệu đầu vào
++ Mã hóa dữ liệu đầu ra
++ Lập whitelist
++ Sử dụng template engine
++ Trong PHP: sử dụng hàm htmlentites, hàm jsescape 
++ How to prevent XSS client-side in JavaScript: tự tạo bộ encode HTML
++ Sử dụng CSP: CSP là một cơ chế bảo mật của trình duyệt nhằm giảm thiểu XSS và một số cuộc tấn công khác. Nó hoạt động bằng cách hạn chế các tài nguyên (chẳng hạn như script và image) mà một trang có thể load và hạn chế liệu một trang có thể frame bởi các trang khác hay không.
+ Để kích hoạt CSP, một respone cần bao gồm HTTP response header Content-Security-Policy
+![image](https://user-images.githubusercontent.com/97771705/216882445-4562a070-81e8-4703-a063-c465e480cb6c.png)
+![image](https://user-images.githubusercontent.com/97771705/216882477-18c020ee-1e3a-45bb-9f29-4ed511436787.png)
+![image](https://user-images.githubusercontent.com/97771705/216882498-e0de4b67-3ffd-49b6-a0f0-399a7311a41c.png)
+
+  
+ 
+  

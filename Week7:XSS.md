@@ -66,6 +66,14 @@
 
 ## 2.3. DOM based XSS: 
 + Khá giống với Reflected XSS, tuy nhiên script của hacker sẽ không được nhúng trực tiếp vào ứng dụng web mà thông qua DOM (Document Object Model) và không giống như 2 loại XSS trên, mã độc sẽ được thực thi ngay khi xử lý phía client mà không thông qua server.
++ Các lỗ hổng XSS dựa trên DOM thường phát sinh khi JavaScript lấy dữ liệu từ một source có thể kiểm soát được của kẻ tấn công, chẳng hạn như URL và chuyển dữ liệu đó tới phần sink hỗ trợ thực thi mã động, chẳng hạn như eval()hoặc innerHTML
+
+### 2.3.1. Bài tập
+
+### 2.3.2 Thuật ngữ 
+
++ Source là thuộc tính JavaScript chấp nhận dữ liệu có khả năng bị kẻ tấn công kiểm soát. VD URL, attribute location, database....
++ Sink là một hàm JavaScript hoặc đối tượng DOM nguy hiểm tiềm ẩn có thể gây ra các tác động không mong muốn nếu dữ liệu do kẻ tấn công kiểm soát được chuyển đến nó. VD eval(), document.body.innerHTML, postMesage,...
 
 # 3. Một số cách bypass
 

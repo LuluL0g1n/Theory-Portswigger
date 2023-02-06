@@ -10,4 +10,6 @@ https://portswigger.net/web-security/cors/same-origin-policy
 + Trình duyệt web so sánh Access-Control-Allow-Origin với the requesting website's origin và cho phép truy cập vào phản hồi nếu chúng khớp.
 + ACAO = * là rất nguy hiểm, nên 1 số browsers tự tạo ACAO dựa trên origin của máy khách
 + Pre-flight checks: https://portswigger.net/web-security/cors/access-control-allow-origin
+![image](https://user-images.githubusercontent.com/97771705/217006388-cccad8ef-7207-4152-a05e-db5038551d59.png)
+
 # II. Clickjacking

@@ -35,7 +35,8 @@ https://portswigger.net/web-security/csrf/xss-vs-csrf
 
 ## 2.2 Cookie SameSite
 + 1 site được định nghĩa là top-level domain (TLD) như .com, .net; cộng thêm domain name -> gọi là TLD+1
-![image](https://user-images.githubusercontent.com/97771705/216921705-242de2b8-efbf-4db3-913b-2344901b67ed.png)
+![image](https://user-images.githubusercontent.com/97771705/217400213-a6fcc1e0-4aa4-48c8-8878-4f94f33a3ece.png)
+
 
 + Sự khác biệt giữa 1 site và 1 origin: phạm vi
 > 1 Site gồm nhiều domain name, trong khi origin chỉ có 1

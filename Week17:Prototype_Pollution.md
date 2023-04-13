@@ -69,7 +69,16 @@ Property prototype của 1 Object là invisible(vô hình).
 Mặc dù nó thường được coi là một cách làm không tốt, nhưng vẫn có thể sửa đổi các built-in prototype của JavaScript giống như bất kỳ Object nào khác. Điều này có nghĩa là các nhà phát triển có thể tùy chỉnh hoặc ghi đè hành vi của các built-in method và thậm chí thêm các method mới để thực hiện các thao tác hữu ích.
 # 2. Start reading
 # **What is prototype pollution?**
+Prototype pollution là một lỗ hổng JavaScript cho phép kẻ tấn công thêm các property tùy ý vào các global prototype Object, sau đó có thể được kế thừa bởi các Object do người dùng xác định.
 ## How do prototype pollution vulnerabilities arise?
+Prototype pollution vulnerabilities thường phát sinh khi một hàm JavaScript hợp nhất theo cách đệ quy một Object chứa các property do người dùng kiểm soát vào một existing Object mà không sanitizing các key trước. Điều này có thể cho phép kẻ tấn công đưa vào một property bằng key như __proto__, cùng với các property lồng nhau tùy ý.
+
+Thao tác hợp nhất có thể gán các property lồng nhau cho Prototype Object thay vì chính target Object. Do đó, kẻ tấn công có thể pollute Prototype bằng các property chứa harmful values, sau đó có thể được sử dụng bởi application theo cách nguy hiểm.
+
+Để khai thác cần 3 thành phần:
++ A prototype pollution source
++ A sink
++ An exploitable gadget
 ## Prototype pollution sources
 ### Prototype pollution via the URL
 ### Prototype pollution via JSON input

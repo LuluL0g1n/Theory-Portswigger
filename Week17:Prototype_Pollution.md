@@ -66,7 +66,7 @@ Property prototype của 1 Object là invisible(vô hình).
 ![image](https://user-images.githubusercontent.com/97771705/231651771-39c9a2a3-3cb0-4cbe-b7bd-d670ae45b306.png)
 
 ### Modifying prototypes
-
+Mặc dù nó thường được coi là một cách làm không tốt, nhưng vẫn có thể sửa đổi các built-in prototype của JavaScript giống như bất kỳ Object nào khác. Điều này có nghĩa là các nhà phát triển có thể tùy chỉnh hoặc ghi đè hành vi của các built-in method và thậm chí thêm các method mới để thực hiện các thao tác hữu ích.
 # 2. Start reading
 # **What is prototype pollution?**
 ## How do prototype pollution vulnerabilities arise?

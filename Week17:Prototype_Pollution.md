@@ -26,9 +26,7 @@ const user =  {
     }
 }
 ```
-Cần phân biệt Prototype Object và Property prototype của 1 Object. 
 
-Property prototype của 1 Object là invisible.
 ### What is a prototype in JavaScript?
 Mọi Object trong JavaScript được liên kết với một Object khác thuộc loại nào đó, được gọi là prototype của nó.
 
@@ -51,7 +49,22 @@ Các Object tự động kế thừa tất cả các property của prototype đ
 ### How does object inheritance work in JavaScript?
 Bất cứ khi nào bạn tham chiếu một property của một Object, trước tiên, công cụ JavaScript sẽ cố gắng truy cập property này trực tiếp trên chính Object đó. Nếu Object không có property phù hợp, công cụ JavaScript sẽ tìm property đó trên prototype của Object
 ### The prototype chain
+1 prototype của 1 Object là 1 Object khác. Mọi Object đều có prototype của mình (như 1 chuỗi - chain) cho đến cấp cao nhất là Object.prototype có prototype là null.
+
+![image](https://user-images.githubusercontent.com/97771705/231651153-886d969b-5230-4ec0-b318-da4e64bb2c17.png)
+
+Điều quan trọng là các Object kế thừa các property không chỉ từ prototype trực tiếp của chúng mà còn từ tất cả các Object phía trên chúng trong prototype chain. (ví dụ Object username kế thừa property và method của String.prototype và Object.prototype)
 ### Accessing an object's prototype using __proto__
+Mỗi Object có một property đặc biệt mà bạn có thể sử dụng để truy cập prototype của nó, được gọi là prototype property: __proto__
+
+![image](https://user-images.githubusercontent.com/97771705/231652247-dc1d9605-25be-4fed-a43b-b607680e85c3.png)
+
+Cần phân biệt Prototype Object và Property prototype của 1 Object. 
+
+Property prototype của 1 Object là invisible(vô hình).
+
+![image](https://user-images.githubusercontent.com/97771705/231651771-39c9a2a3-3cb0-4cbe-b7bd-d670ae45b306.png)
+
 ### Modifying prototypes
 
 # 2. Start reading

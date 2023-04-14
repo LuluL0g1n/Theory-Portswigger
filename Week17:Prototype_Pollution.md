@@ -145,8 +145,40 @@ Website cũng có cách phòng chống khác là sanitization các property key 
 vulnerable-website.com/?__pro__proto__to__.gadget=payload
 ```
 ## Prototype pollution in external libraries
+prototype pollution gadget có thể xuất hiện trong các thư viện của bên thứ ba được ứng dụng nhập vào.
 ## Prototype pollution via browser APIs
 ### Prototype pollution via fetch()
+API Fetch cung cấp một cách đơn giản để các nhà phát triển kích hoạt các HTTP request bằng JavaScript. Phương thức fetch() chấp nhận hai đối số:
++ URL mà bạn muốn gửi request.
++ Một Object tùy chọn cho phép bạn kiểm soát các phần của request, chẳng hạn như method, headers, body parameters,...
+
+![image](https://user-images.githubusercontent.com/97771705/231939445-f9815c74-96e9-41b8-b43f-108f6700fe5f.png)
+
+Như ví dụ trên đã xác định method và body property. Nhưng có thể còn có các property chưa xác định(như headers) nhưng trong request vẫn sử dụng nó. 
+
+Trong trường hợp này, nếu attacker có thể tìm thấy một source phù hợp, chúng có khả năng polute Object.prototype bằng property headers. Điều này sau đó có thể được kế thừa bởi Object tùy chọn được truyền vào fetch() và sau đó được sử dụng để tạo request.
+
+pollute Object.prototype -> option Object của fetch() -> truyền vào gadget -> thực thi code
+
+![image](https://user-images.githubusercontent.com/97771705/231941561-eaee09c3-156a-43ba-9a28-0ac7d7a6904d.png)
+
+![image](https://user-images.githubusercontent.com/97771705/231942319-e88dbc7d-ae35-4147-b2ef-264f8d049f88.png)
+
+```
+?__proto__[headers][x-username]=<img/src/onerror=alert(1)>
+```
+
+Bạn có thể sử dụng kỹ thuật này để kiểm soát bất kỳ property không xác định nào của Object tùy chọn được chuyển đến fetch()
 ### Prototype pollution via Object.defineProperty()
+Object.defineProperty() method cho phép bạn set non-configurable, non-writable property trực tiếp trên Object bị ảnh hưởng
+```
+Object.defineProperty(vulnerableObject, 'gadgetProperty', {
+    configurable: false,
+    writable: false
+})
+```
+Tuy nhiên, giống như fetch(), Object.defineProperty() có object tùy chọn, gọi là descriptor
 
+![image](https://user-images.githubusercontent.com/97771705/231943566-3cffa8d0-0adb-4d65-b4ee-31231566b648.png)
 
+Ta có thể pollute Object.prototype bằng `value` property. Sau đó nó sẽ được descriptor của Object.defineProperty kế thừa. Từ đó gán cho gadget -> thực thi code của attacker :)

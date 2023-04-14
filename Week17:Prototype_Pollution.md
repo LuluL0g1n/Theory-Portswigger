@@ -199,14 +199,76 @@ Phương thức hasOwnProperty() trả về một giá trị boolean cho biết 
 
 ![image](https://user-images.githubusercontent.com/97771705/231979034-db690ede-00a6-4ad3-95b5-6e7b0f170e26.png)
 
+Một vòng lặp for...in JavaScript lặp lại trên tất cả các property có thể đếm được của một object, bao gồm cả những property mà nó đã kế thừa qua prototype chain.
+
+Nếu ứng dụng include các property được trả về trong response, điều này có thể cung cấp một cách đơn giản để thăm dò server-side prototype pollution
+
+Sử dụng POST, có 1 prototype như sau
+```
+"__proto__":{
+        "foo":"bar"
+    }
+```
+
+![image](https://user-images.githubusercontent.com/97771705/231983779-20236a8e-df52-4be0-a024-db9b6b21d26a.png)
 
 ## Detecting server-side prototype pollution without polluted property reflection
+Nhưng trong hầu hết mọi trường hợp, ngay cả khi chúng ta đã pollute thành công, sẽ không có bất kì property nào được reflect trong response. Vậy làm thế nào để kiểm tra xem phần inject của mình có hoạt động hay không?
+
+Một cách tiếp cận là thử tiêm các thuộc tính phù hợp với các tùy chọn cấu hình tiềm năng cho máy chủ. Sau đó, bạn có thể so sánh hành vi của máy chủ trước và sau khi tiêm để xem liệu thay đổi cấu hình này có hiệu lực không
+
+3 kỹ thuật là:
++ Status code override
++ JSON spaces override
++ Charset override
+
+Các injection này là non-detructive, nhưng vẫn gây ra sự thay đổi nhất quán và đặc biệt trong hành vi của server khi thành công.
 ### Status code override
+Server-side JavaScript framework như Express cho phép các nhà phát triển đặt HTTP response status tùy chỉnh. Trong trường hợp có lỗi, JavaScript server có thể đưa ra  HTTP response chung, nhưng include một error object ở định dạng JSON trong body. Đây là một cách cung cấp thêm chi tiết về lý do xảy ra lỗi, điều này có thể không rõ ràng từ default HTTP status.
+
+![image](https://user-images.githubusercontent.com/97771705/231995698-04af8ae0-8ddf-4362-a894-04ec96c50c75.png)
+
+Các bước check:
++ Tạo ra lỗi và ghi nhớ default status code 
++ Tại 1 request mới(không chủ ý tạo lỗi), Pollute bằng 1 `status` property
+```
+"__proto__": {
+    "status":555
+}
+```
++ Giờ tiếp tục tạo ra lỗi và xem status code đã được override hay chưa
+
 ### JSON spaces override
+Express framework có  `json spaces` option, dùng để config khoảng trắng được sử dụng để thụt lề bất kỳ dữ liệu JSON nào trong response.
+
+Nếu bạn có quyền truy cập vào bất kỳ loại JSON response nào, bạn có thể thử làm prototype pollution bằng thuộc tính json spaces của riêng mình, sau đó gửi lại request có liên quan để xem liệu độ thụt lề trong JSON có tăng tương ứng hay không.
+
+ví dụ 
+```
+"__proto__":{
+"json spaces":10
+}
+```
+
+![image](https://user-images.githubusercontent.com/97771705/232000039-3fc70243-376e-4542-93f5-6057cdfe9722.png)
+
 ### Charset override
+Content-Type header có thể không chứa charset attribute, 
+Thông thường charset là UTF-8, nhưng ta có thể override nó thành UTF-7 hoặc charset khác
+```
+"__proto__":{
+        "content-type": "application/json; charset=utf-7"
+    }
+```
+với `"role":"+AGYAbwBv-"` phần response sẽ trả về  `"role":"foo"` -> thành công trong việc pollute
 ## Scanning for server-side prototype pollution sources
 ## Bypassing input filters for server-side prototype pollution
+Websites thường chống prototype pollution vulnerabilities bằng cách filtering key như `__proto__`, tuy nhiên điều này có thể được bypasa bằng cách sử dụng constructor property hay Obfuscate
+
+Node application cũng có thể delete hoặc disable `__proto__` bằng cách sử dụng commad-line flag như --disable-proto=delete hoặc --disable-proto=throw. Nhưng điều này cũng có thể bypass thông qua constructor technique.  
 ## Remote code execution via server-side prototype pollution
 ### Identifying a vulnerable request
+Có một số khả năng thực thi lệnh chìm trong Node, nhiều trong số đó xảy ra trong modul child_process. Chúng thường được gọi bởi một request xảy ra không đồng bộ với request mà bạn có thể làm pollution prototype ngay từ đầu. Do đó, cách tốt nhất để xác định các request này là làm polluting the prototype bằng payload kích hoạt tương tác với Burp Collaborator khi được gọi.
+
 ### Remote code execution via child_process.fork()
 ### Remote code execution via child_process.execSync()

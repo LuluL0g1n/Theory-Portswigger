@@ -105,6 +105,11 @@ User-controllable object thường được lấy từ một JSON string bằng 
     }
 }
 ```
+
+![image](https://user-images.githubusercontent.com/97771705/231975621-acdaa109-ee74-4261-ab9d-d9fb55288f70.png)
+
+![image](https://user-images.githubusercontent.com/97771705/231975038-befb92af-408b-43e3-8b58-39b5f1322186.png)
+
 ## Prototype pollution sinks
 Prototype pollution sink về cơ bản chỉ là một JavaScript function hoặc phần tử DOM mà bạn có thể truy cập thông qua prototype pollution, cho phép bạn thực thi các lệnh hệ thống hoặc JavaScript tùy ý
 ## Prototype pollution gadgets
@@ -170,6 +175,7 @@ pollute Object.prototype -> option Object của fetch() -> truyền vào gadget 
 
 Bạn có thể sử dụng kỹ thuật này để kiểm soát bất kỳ property không xác định nào của Object tùy chọn được chuyển đến fetch()
 ### Prototype pollution via Object.defineProperty()
+Object.defineProperty() xác định một property mới trực tiếp trên một Object hoặc sửa đổi một existing property trên một Object và trả về Object.
 Object.defineProperty() method cho phép bạn set non-configurable, non-writable property trực tiếp trên Object bị ảnh hưởng
 ```
 Object.defineProperty(vulnerableObject, 'gadgetProperty', {
@@ -182,3 +188,25 @@ Tuy nhiên, giống như fetch(), Object.defineProperty() có object tùy chọn
 ![image](https://user-images.githubusercontent.com/97771705/231943566-3cffa8d0-0adb-4d65-b4ee-31231566b648.png)
 
 Ta có thể pollute Object.prototype bằng `value` property. Sau đó nó sẽ được descriptor của Object.defineProperty kế thừa. Từ đó gán cho gadget -> thực thi code của attacker :)
+# Server-side prototype pollution
+## Why is server-side prototype pollution more difficult to detect?
++ Không có quyền truy cập mã nguồn
++ Thiếu công cụ dành cho nhà phát triển
++ Có thể gây ra Sự cố DoS
++ Pollution tồn tại lâu dài khi test
+## Detecting server-side prototype pollution via polluted property reflection
+Phương thức hasOwnProperty() trả về một giá trị boolean cho biết liệu đối tượng có thuộc tính được chỉ định làm thuộc tính riêng của nó hay không.
+
+![image](https://user-images.githubusercontent.com/97771705/231979034-db690ede-00a6-4ad3-95b5-6e7b0f170e26.png)
+
+
+## Detecting server-side prototype pollution without polluted property reflection
+### Status code override
+### JSON spaces override
+### Charset override
+## Scanning for server-side prototype pollution sources
+## Bypassing input filters for server-side prototype pollution
+## Remote code execution via server-side prototype pollution
+### Identifying a vulnerable request
+### Remote code execution via child_process.fork()
+### Remote code execution via child_process.execSync()

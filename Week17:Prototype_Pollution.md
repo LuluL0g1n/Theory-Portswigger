@@ -73,16 +73,80 @@ Prototype pollution là một lỗ hổng JavaScript cho phép kẻ tấn công 
 ## How do prototype pollution vulnerabilities arise?
 Prototype pollution vulnerabilities thường phát sinh khi một hàm JavaScript hợp nhất theo cách đệ quy một Object chứa các property do người dùng kiểm soát vào một existing Object mà không sanitizing các key trước. Điều này có thể cho phép kẻ tấn công đưa vào một property bằng key như __proto__, cùng với các property lồng nhau tùy ý.
 
+![image](https://user-images.githubusercontent.com/97771705/231929594-1865fc3d-3238-427a-b975-bb74ede7b18f.png)
+
+
 Thao tác hợp nhất có thể gán các property lồng nhau cho Prototype Object thay vì chính target Object. Do đó, kẻ tấn công có thể pollute Prototype bằng các property chứa harmful values, sau đó có thể được sử dụng bởi application theo cách nguy hiểm.
 
 Để khai thác cần 3 thành phần:
-+ A prototype pollution source
-+ A sink
-+ An exploitable gadget
++ A prototype pollution source: Đây là bất kỳ đầu vào nào cho phép bạn poison prototype object bằng các property tùy ý.
++ A sink: một JavaScript function hoặc phần tử DOM cho phép thực thi mã tùy ý
++ An exploitable gadget: Đây là bất kỳ property nào được đưa vào sink mà không được filtering hoặc sanitization thích hợp.
 ## Prototype pollution sources
+Prototype pollution sources là bất kỳ đầu vào nào do người dùng kiểm soát cho phép bạn thêm các property tùy ý vào các prototype object. Các nguồn phổ biến nhất như sau:
+
++ URL thông qua query hoặc fragment string (hash)
++ JSON-based input
++ Web messages
 ### Prototype pollution via the URL
+`https://vulnerable-website.com/?__proto__[evilProperty]=payload`
+
+![image](https://user-images.githubusercontent.com/97771705/231928968-1e393dcc-a324-46e4-b9ac-07a104af7847.png)
+
+`targetObject.__proto__.evilProperty = 'payload';`
+
+Đôi khi JS coi `__proto__` như một getter của prototype. Kết quả là, evilPropertyđược gán cho prototype object được trả về thay vì chính target object.
 ### Prototype pollution via JSON input
+User-controllable object thường được lấy từ một JSON string bằng JSON.parse() method. JSON.parse() cũng coi bất kỳ key nào trong JSON Object là một chuỗi tùy ý, bao gồm cả `__proto__`.
+```
+{
+    "__proto__": {
+        "evilProperty": "payload"
+    }
+}
+```
 ## Prototype pollution sinks
+Prototype pollution sink về cơ bản chỉ là một JavaScript function hoặc phần tử DOM mà bạn có thể truy cập thông qua prototype pollution, cho phép bạn thực thi các lệnh hệ thống hoặc JavaScript tùy ý
 ## Prototype pollution gadgets
-### Example of a prototype pollution gadget
+Một gadget cung cấp một phương tiện để biến lỗ hổng prototype pollution thành một khai thác thực tế. Đây là bất kỳ property nào:
+
++ Được ứng dụng sử dụng theo cách không an toàn, chẳng hạn như chuyển nó vào sink mà không được filter hoặc sanitization thích hợp.
++ Attacker có thể kiểm soát thông qua prototype pollution. Nói cách khác, Object phải có khả năng kế thừa malicious version của property được add vào prototype bởi attacker.
+
+Một property không thể là một gadget nếu nó được xác định trực tiếp trên chính Object đó. Trong trường hợp này, phiên bản property riêng của Object được ưu tiên hơn bất kỳ phiên bản độc hại nào mà bạn có thể thêm vào prototype. Các trang web mạnh mẽ cũng có thể đặt prototype của Object thành null, điều này đảm bảo rằng Object hoàn toàn không kế thừa bất kỳ property nào.
+# Client-side prototype pollution vulnerabilities
+## Finding client-side prototype pollution sources manually
+Các bước:
+1. Thử thêm 1 property thông qua URL fragment hay JSON input 
+```
+vulnerable-website.com/?__proto__[foo]=bar
+```
+2. Tại Console, kiểm tra Object.prototype xem đã thành công pollute property chưa
+3. `?__proto__[foo]=bar` không được thì xài phương án tương tự như `?__proto__.foo=bar`
+4. Lặp lại cho tường source 
+## Finding client-side prototype pollution sources using DOM Invader
+Xài tool :)
+## Finding client-side prototype pollution gadgets manually
+Lú lém :(
+## Finding client-side prototype pollution gadgets using DOM Invader
+Xài tool :)
+## Prototype pollution via the constructor
+1 trong những cách để chống classic Prototype pollution là loại bỏ mọi property có khóa `__proto__` khỏi user-controlled objects trước khi merging chúng.
+
+Nhưng cách này chưa an toàn. Trừ khi prototype được set là `null`, mọi JS Object đều có constructor property chứa tham chiếu đến constructor function tạo ra nó. Mà constructor function lại có prototype property trỏ đến prototype được gán cho bất kỳ Object nào tạo bởi constructor function này. Do đó, bạn cũng có thể truy cập prototype của bất kỳ Object nào 
+
+-> `targetObject.constructor.prototype` tương đương với `targetObject.__proto__`
+
+![image](https://user-images.githubusercontent.com/97771705/231935530-73fe8657-2054-4805-a6f7-8ee2050301b1.png)
+
+## Bypassing flawed key sanitization
+Website cũng có cách phòng chống khác là sanitization các property key trước khi merge chúng vào 1 exitsting Object. Nhưng đôi lúc xảy ra lỗi không sanitization chuỗi đầu vào theo cách đệ quy
+```
+vulnerable-website.com/?__pro__proto__to__.gadget=payload
+```
+## Prototype pollution in external libraries
+## Prototype pollution via browser APIs
+### Prototype pollution via fetch()
+### Prototype pollution via Object.defineProperty()
+
 

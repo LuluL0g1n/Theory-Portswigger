@@ -29,7 +29,9 @@ Sig là phòng tuyến quan trọng nhât vì:
 + Sig được làm từ Header và Payload thì sửa 1 byte cũng sẽ dẫn đến kết quả khác nhau. 
 + Không có private key (đối vs RSA) và secret key (với HMAC) thì không thể tạo sig 
 ### JWT vs JWS vs JWE
+Một chuỗi Signed JWT được gọi là JWS (JSON Web Signature). Trong thực tế JWT không tồn tại riêng lẻ mà nó phải là JWS hoặc JWE (JSON Web Encryption).
 
+Nói cách khác, JWT thường là JWS hoặc JWE token. Khi mọi người sử dụng thuật ngữ "JWT", hầu như họ luôn có nghĩa là JWS token. JWE tương tự, ngoại trừ nội dung thực tế của token được encrypt thay vì chỉ được encode. (encrypt có sử dụng key, encode thì không)
 ## What are JWT attacks?
 ## What is the impact of JWT attacks?
 ## How do vulnerabilities to JWT attacks arise?

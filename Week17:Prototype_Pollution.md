@@ -315,3 +315,19 @@ child_process.execSync() cũng giống như child_process.fork(), đều chấp 
 "shell":"vim",
 "input":":! <command>\n"
 ```
+
+# Preventing prototype pollution vulnerabilities
+## Sanitizing property keys
+Sử dụng blocklist để chặn, xóa các chuỗi như `__proto__` từ user input.
+## Preventing changes to prototype objects
+Sử dụng Object.freeze() để ngăn thay đổi prototype object. Object.freeze() ngăn việc sử propety và value , và không có property mới được phép thêm vào.
+
+Mgoài ra còn có Object.seal(). Cũng giống Object.freeze() nhưng cho phép thay đổi value của 1 property.
+## Preventing an object from inheriting properties (Ngăn chặn một đối tượng kế thừa các thuộc tính)
+Mọi object đều kế thừa Object.prototype theo prototype chain nếu để theo mặc định.
+
+Sử dụng Object.create(null) để khiến cho prototype của object là null, ngăn chặn việc kế thừa
+## Using safer alternatives where possible
+Sử dụng các object cung cấp built-in protection
++ Map(): chứa built-in `get()` method, chỉ trả về property được xác định trực tiếp trên Map()
++ Set(): chứa buitl-in `has()`, chỉ trả về property được xác định trực tiếp trên Set(). Set() chỉ lưu value thay vid cặp key:value

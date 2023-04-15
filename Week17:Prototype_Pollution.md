@@ -300,4 +300,18 @@ Ngoài ra child_process module chứa  `execSync()` method cho phép thực thi 
 
 ### Remote code execution via child_process.execSync()
 child_process.execSync() cũng giống như child_process.fork(), đều chấp nhận option object. Tuy nó không có execArgv property nhưng lại có `shell` và `input` property
++ input option chỉ là một chuỗi được chuyển đến luồng stdin của child process và được thực thi dưới dạng system command bởi execSync()
++ shell option cho phép khai báo 1 shell cụ thể mà ta muốn chạy command trong đó. Theo mặc định, execSync() sử dụng shell mặc định của hệ thống để chạy command.
 
+-> cả 2 option đều có thể không được xác định -> thời cơ cho ta pollute
+
+1 số lưu ý 
++ `shell` option chỉ chấp nhận tên của trình thực thi shell vd như `/bin/bash` và k chấp nhận đối số nào (vd -l, --help)
++ shell luôn luôn thực thi vs đối số `-c` để chuyển 1 command ra dạng 1 string
++ input option chứa payload được truyền qua stdin, sau đó mới chuyển đến shell, đòi hỏi shell phải chấp nhận command từ stdin
+
+-> trình text editor `vim` đáp ứng hết :)
+```
+"shell":"vim",
+"input":":! <command>\n"
+```
